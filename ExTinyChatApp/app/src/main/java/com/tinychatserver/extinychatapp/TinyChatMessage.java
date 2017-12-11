@@ -9,6 +9,7 @@ public class TinyChatMessage {
     String msg;
     long clientTime;
     long serverTime;
+    private int synced;
 
     public TinyChatMessage() {
     }
@@ -51,5 +52,18 @@ public class TinyChatMessage {
 
     public String getMsg() {
         return msg;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
+    }
+
+    public int getSynced() {
+        return synced;
+    }
+
+    @Override
+    public String toString() {
+        return msg+" is "+(new String[]{"not yet deliverd", "deliverd"}[synced]);
     }
 }

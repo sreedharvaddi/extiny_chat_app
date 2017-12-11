@@ -15,6 +15,8 @@ public interface ITinyChatClientSocket {
 
     void register(IClientSocketCallbacks callbacks);
 
+    boolean isConnected();
+
 
     interface IClientSocketCallbacks {
         void onHistory(List<TinyChatMessage> messageList);

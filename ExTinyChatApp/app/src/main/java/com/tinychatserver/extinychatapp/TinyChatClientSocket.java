@@ -104,6 +104,11 @@ public class TinyChatClientSocket implements ITinyChatClientSocket , Runnable {
     }
 
     @Override
+    public boolean isConnected() {
+        return (mClientSocket != null && mClientSocket.isConnected());
+    }
+
+    @Override
     public void run() {
         Log.d(TAG, "recever thread ");
         if (mClientSocket != null && mClientSocket.isConnected()) {

@@ -22,7 +22,7 @@ public class TinyChatApplication extends Application {
         //IMantraModel model = MantrasModel.MantraModelBuilder.getBuilder()
         //        .setOfflineRepo(offlineRepo)
         //        .setOnlineRepo(onlineRepo).build();
-        ITinyChatModel model = new TinyChatModel();
+        ITinyChatModel model = new TinyChatModel(new TinyChatRepo(this));
 
         tinyPresenterBuilder = new TinyPresenter.TinyPresenterBuilder()
                 .setModel(model);

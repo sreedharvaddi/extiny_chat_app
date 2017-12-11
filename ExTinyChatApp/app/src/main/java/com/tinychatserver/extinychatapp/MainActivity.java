@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements ITinyChatView {
         b_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 Log.d("test", "<><> Button Clicked with msg: " + et_message.getText().toString());
                 presenter.sendMessage(et_message.getText().toString());
             }
@@ -58,18 +57,26 @@ public class MainActivity extends AppCompatActivity implements ITinyChatView {
 
     @Override
     public void displayHistory(List<TinyChatMessage> messageList) {
+        final StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < messageList.size(); i++) {
+            buffer.append(messageList.get(i).toString());
         }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tv_response.setText(buffer.toString());
+            }
+        });
     }
 
     @Override
     public void displayProgress() {
-
+        // TODO show progress
     }
 
     @Override
     public void displayError(int error) {
-
+        // TODO show error
     }
 
     @Override

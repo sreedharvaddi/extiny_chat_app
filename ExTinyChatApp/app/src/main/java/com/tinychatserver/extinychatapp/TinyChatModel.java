@@ -8,17 +8,29 @@ import java.util.List;
  */
 public class TinyChatModel implements ITinyChatModel, ITinyChatClientSocket.IClientSocketCallbacks {
 
+    private static final int NOT_SYNCED = 0;
+    private static final int SYNCED = 1;
     ITinyChatClientSocket tinyChatClientSocket;
+    ITinyChatRepo tinyChatRepo;
     long timeSince;
     private ICallbacks presenterCallbacks;
 
     public TinyChatModel() {
 
     }
+
+    public TinyChatModel(TinyChatRepo repo) {
+        tinyChatRepo = repo;
+    }
+
     @Override
     public void fetchChatHistory() {
-        if (tinyChatClientSocket != null) {
+        if (tinyChatClientSocket != null && tinyChatClientSocket.isConnected()) {
             tinyChatClientSocket.sendMessage("{\"command\":\"history\",\"client_time\":" + Calendar.getInstance().getTimeInMillis() + ",\"since\":" + timeSince + "}\\n");
+        }
+        else {
+            List<TinyChatMessage> messageList = tinyChatRepo.getMessages(timeSince, Calendar.getInstance().getTimeInMillis());
+            presenterCallbacks.onFetchChatHistory(0, messageList);
         }
     }
 
@@ -40,8 +52,12 @@ public class TinyChatModel implements ITinyChatModel, ITinyChatClientSocket.ICli
 
     @Override
     public void sendMessage(TinyChatMessage msg) {
-        if (tinyChatClientSocket != null) {
+        if (tinyChatClientSocket != null && tinyChatClientSocket.isConnected()) {
             tinyChatClientSocket.sendMessage(msg.toJsonString());
+        }
+        else {
+            msg.setSynced(NOT_SYNCED);
+            tinyChatRepo.saveMessage(msg);
         }
     }
 
@@ -62,6 +78,8 @@ public class TinyChatModel implements ITinyChatModel, ITinyChatClientSocket.ICli
     @Override
     public void onSendSuccess(TinyChatMessage message) {
         presenterCallbacks.onSendMessage(0, message.getMsg());
+        message.setSynced(SYNCED);
+        tinyChatRepo.saveMessage(message);
         timeSince = Calendar.getInstance().getTimeInMillis();
     }
 
